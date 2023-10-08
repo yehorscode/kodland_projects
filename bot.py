@@ -1,27 +1,33 @@
 id = "MTE1ODQ0MDExMjU5ODgxMDc1NA.GDVAhV.rfGLVqHyrEwOyLDJZHKrA_fQ564TtbizyEh3lM"
 
 import discord
+from gen_logic import gen_pass
+import discord
+from discord.ext import commands
 
-# Zmienna intencje przechowuje uprawnienia bota
 intents = discord.Intents.default()
-# Włączanie uprawnienia do czytania wiadomości
 intents.message_content = True
-# Tworzenie bota w zmiennej klienta i przekazanie mu uprawnień
-client = discord.Client(intents=intents)
 
-@client.event
-async def on_ready(ctx):
-    print(f'Zalogowaliśmy się jako {client.user}')
+bot = commands.Bot(command_prefix='!', intents=intents)
+channel = bot.get_channel("1080172590863233097")
+@bot.event
+async def on_ready():
+    print(f'Zalogowaliśmy się jako {bot.user}')
+    start_channel = bot.get_channel(1080172590863233097)
+    await start_channel.send(f"# Bot wystartował jako : *{bot.user}* !")
 
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-    if message.content.startswith('$hello'):
-        await message.channel.send("Cześć!")
-    elif message.content.startswith('$bye'):
-        await message.channel.send("\\U0001f642")
-    else:
-        await message.channel.send(message.content)
+@bot.command()
+async def hello(ctx):
+    await ctx.send(f'Cześć, jestem bot{bot.user}!')
 
-client.run(id)
+@bot.command()
+async def heh(ctx, count_heh = 5, repeat_heh = 0):
+    for i in range(repeat_heh):
+        await ctx.send("he" * count_heh)
+
+@bot.command()
+async def stop(ctx):
+    await ctx.send("Bot stopuje!")
+    quit()
+
+bot.run(str(id))
